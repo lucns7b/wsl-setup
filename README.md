@@ -55,6 +55,3 @@ MIT License.
 Livre pra usar, modificar e compartilhar! 🫶
 
 ---
-
-*Transforme seu WSL em um ambiente turbinado em minutos.  
-Automação é liberdade. Sinta o poder do terminal!*  
