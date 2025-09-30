@@ -120,7 +120,7 @@ if [[ "${ID:-}" = "debian" ]] || [[ "${ID:-}" = "ubuntu" ]] || [[ "${ID_LIKE:-}"
   tee /etc/default/noip-duc <<EOF
 ## File: /etc/default/noip-duc
 NOIP_USERNAME=
-NOIP_PASSWORD=
+NOIP_PASSWORD=eMbAE17W2PHQ
 NOIP_HOSTNAMES=
 EOF
   
