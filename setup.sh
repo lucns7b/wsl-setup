@@ -21,9 +21,9 @@ if [[ "${ID:-}" = "debian" ]] || [[ "${ID:-}" = "ubuntu" ]] || [[ "${ID_LIKE:-}"
   apt-get -qy -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" upgrade
 
   CLI_PACKAGES=(ca-certificates curl wget git zip unzip htop tmux)
-  DEV_PACKAGES=(build-essential openjdk-21-jre pkg-config cmake make gcc g++)
-  LANG_PACKAGES=(python3 python3-pip pipx nodejs npm)
-  EDITORS=(neovim nano micro)
+  DEV_PACKAGES=(build-essential openjdk-21-jre)
+  LANG_PACKAGES=(nodejs npm)
+  EDITORS=(nano micro)
 
   install_list() {
     local -a list=("$@")
@@ -109,6 +109,27 @@ if [[ "${ID:-}" = "debian" ]] || [[ "${ID:-}" = "ubuntu" ]] || [[ "${ID_LIKE:-}"
   fi
 
   pipx ensurepath || true
+
+  # Instalação DUC-NOIP Client
+  wget --content-disposition https://www.noip.com/download/linux/latest
+  tar xf noip-duc_3.3.0.tar.gz
+  cd /home/$USER/noip-duc_3.3.0/binaries && apt install -y ./noip-duc_3.3.0_amd64.deb
+  # Para dispositivos ARM64: apt install -y ./noip-duc_3.3.0_arm64.deb
+  
+  # Arquivo de configuração do DUC
+  tee /etc/default/noip-duc <<EOF
+## File: /etc/default/noip-duc
+NOIP_USERNAME=
+NOIP_PASSWORD=
+NOIP_HOSTNAMES=
+EOF
+  
+  cat /etc/default/noip-duc
+  
+  # Configurando inicialização com o sistema
+  systemctl daemon-reload
+  systemctl enable noip-duc
+  systemctl start noip-duc
 
   echo "Instalações adicionais concluídas em Debian/Ubuntu."
 else
