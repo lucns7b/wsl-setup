@@ -124,7 +124,8 @@ if [[ "${ID:-}" = "debian" ]] || [[ "${ID:-}" = "ubuntu" ]] || [[ "${ID_LIKE:-}"
   # Instalação DUC-NOIP Client
   wget --content-disposition https://www.noip.com/download/linux/latest
   tar xf noip-duc_3.3.0.tar.gz
-  cd /home/$USER/noip-duc_3.3.0/binaries && apt install -y ./noip-duc_3.3.0_amd64.deb
+  cd /home/$USER/noip-duc_3.3.0/binaries
+  apt install -y ./noip-duc_3.3.0_amd64.deb
   # Para dispositivos ARM64: apt install -y ./noip-duc_3.3.0_arm64.deb
   
   # Arquivo de configuração do DUC
