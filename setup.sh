@@ -126,7 +126,7 @@ if [[ "${ID:-}" = "debian" ]] || [[ "${ID:-}" = "ubuntu" ]] || [[ "${ID_LIKE:-}"
   tar xf noip-duc_3.3.0.tar.gz
   cd /home/$USER/noip-duc_3.3.0/binaries
   apt -gy install ./noip-duc_3.3.0_amd64.deb
-  # Para dispositivos ARM64: apt install -y ./noip-duc_3.3.0_arm64.deb
+  # Para dispositivos ARM64: apt install -y ./noip-duc_3.3.0_amd64.deb
   
   # Arquivo de configuração do DUC
   tee /etc/default/noip-duc <<EOF
