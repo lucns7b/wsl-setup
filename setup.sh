@@ -8,6 +8,9 @@ else
   . /usr/lib/os-release
 fi
 
+TARGET_USER="${TARGET_USER:-${SUDO_USER:-$(whoami)}}"
+TARGET_HOME="${TARGET_HOME:-/home/$TARGET_USER}"
+
 apt-get -qy update
 apt-get -qy -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" upgrade
 
