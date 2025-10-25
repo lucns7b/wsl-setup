@@ -1,7 +1,3 @@
-# WSL Setup 
-
-Automatização do ambiente **WSL (Windows Subsystem for Linux)**  
-
 ## 🚀 Launch
 ```
 
