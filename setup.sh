@@ -15,7 +15,7 @@ apt-get -qy update
 apt-get -qy -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" upgrade
 
 CLI_PACKAGES=(curl wget git tmux)
-DEV_PACKAGES=(build-essential openjdk-21-jre)
+DEV_PACKAGES=(build-essential)
 EDITORS=(micro)
 
 install_list() {
@@ -39,7 +39,9 @@ CODENAME="${UBUNTU_CODENAME:-${VERSION_CODENAME:-stable}}"
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/${DOCKER_DIST} ${CODENAME} stable" | tee /etc/apt/sources.list.d/docker.list >/dev/null
 
 install -m 0755 -d /usr/share/keyrings
-curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+if [ ! -f /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg ]; then
+  curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+fi
 curl -fsSL https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list \
   | sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' \
   | tee /etc/apt/sources.list.d/nvidia-container-toolkit.list >/dev/null
@@ -69,20 +71,23 @@ if [[ -s /tmp/docker-mcp.tar.gz ]]; then
   fi
 fi
 
-sudo -u "$TARGET_USER" bash -c 'curl -fsSL https://astral.sh/uv/install.sh | bash'
-if [[ -f "${TARGET_HOME}/.local/bin/uv" ]]; then
-  cp -f "${TARGET_HOME}/.local/bin/uv" /usr/local/bin/
-  chmod +x /usr/local/bin/uv
-fi
-if [[ -f "${TARGET_HOME}/.local/bin/uvx" ]]; then
-  cp -f "${TARGET_HOME}/.local/bin/uvx" /usr/local/bin/
-  chmod +x /usr/local/bin/uvx
+if [ ! -d "${TARGET_HOME}/.asdf" ]; then
+  sudo -u "$TARGET_USER" bash -c 'git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.15.0'
 fi
 
-if ! grep -qF "${TARGET_HOME}/.local/bin" "${TARGET_HOME}/.profile" ; then
-  echo 'export PATH=$PATH:$HOME/.local/bin' >> "${TARGET_HOME}/.profile"
-fi
+sudo -u "$TARGET_USER" bash -c 'grep -qxF '\''
+. $HOME/.asdf/asdf.sh'\'' ~/.bashrc || echo -e "\n. $HOME/.asdf/asdf.sh" >> ~/.bashrc'
+sudo -u "$TARGET_USER" bash -c 'grep -qxF '\''
+. $HOME/.asdf/completions/asdf.bash'\'' ~/.bashrc || echo -e "\n. $HOME/.asdf/completions/asdf.bash" >> ~/.bashrc'
 
-pipx ensurepath || true
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodejs.git'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf plugin-add java https://github.com/halcyon/asdf-java.git'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf plugin-add python'
 
-bash -c 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf install nodejs latest'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf install java openjdk-21'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf install python latest'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf global nodejs latest'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf global java openjdk-21'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf global python latest'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && pip install uv pipx'
