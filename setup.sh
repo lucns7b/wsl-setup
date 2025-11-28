@@ -15,7 +15,7 @@ apt-get -qy update
 apt-get -qy -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" upgrade
 
 CLI_PACKAGES=(curl wget git tmux)
-DEV_PACKAGES=(build-essential)
+DEV_PACKAGES=(build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev)
 EDITORS=(micro)
 
 install_list() {
