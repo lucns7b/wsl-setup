@@ -72,8 +72,8 @@ if [ "$NVIDIA_INSTALL_SUCCESS" = true ]; then
   if ! curl_with_retry -fsSL https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list -o /tmp/nvidia.list; then
     echo "Warning: Failed to download NVIDIA repo list. Skipping NVIDIA Container Toolkit installation." >&2
     NVIDIA_INSTALL_SUCCESS=false
-    # Remove potentially stale list file to avoid apt-get update failure
     rm -f /etc/apt/sources.list.d/nvidia-container-toolkit.list
+    
   else
     sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' /tmp/nvidia.list \
       | tee /etc/apt/sources.list.d/nvidia-container-toolkit.list >/dev/null
