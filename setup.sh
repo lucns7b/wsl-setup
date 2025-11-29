@@ -72,6 +72,8 @@ if [ "$NVIDIA_INSTALL_SUCCESS" = true ]; then
   if ! curl_with_retry -fsSL https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list -o /tmp/nvidia.list; then
     echo "Warning: Failed to download NVIDIA repo list. Skipping NVIDIA Container Toolkit installation." >&2
     NVIDIA_INSTALL_SUCCESS=false
+    rm -f /etc/apt/sources.list.d/nvidia-container-toolkit.list
+    
   else
     sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' /tmp/nvidia.list \
       | tee /etc/apt/sources.list.d/nvidia-container-toolkit.list >/dev/null
@@ -116,14 +118,20 @@ sudo -u "$TARGET_USER" bash -c 'grep -qxF '\''
 sudo -u "$TARGET_USER" bash -c 'grep -qxF '\''
 . $HOME/.asdf/completions/asdf.bash'\'' ~/.bashrc || echo -e "\n. $HOME/.asdf/completions/asdf.bash" >> ~/.bashrc'
 
-sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodejs.git'
-sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf plugin-add java https://github.com/halcyon/asdf-java.git'
-sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf plugin-add python'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodejs.git || true'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf plugin-add java https://github.com/halcyon/asdf-java.git || true'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf plugin-add python || true'
 
-sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf install nodejs latest'
-sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf install java openjdk-21'
-sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf install python latest'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf install nodejs latest || true'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf install java openjdk-21 || true'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf install python latest || true'
 sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf global nodejs latest'
 sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf global java openjdk-21'
 sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf global python latest'
 sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && pip install uv pipx'
+
+echo "========================================================================"
+echo " Setup complete!"
+echo " Please restart your shell or run the following command to start using asdf:"
+echo " source ~/.bashrc"
+echo "========================================================================"
