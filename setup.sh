@@ -129,3 +129,9 @@ sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf global nodejs latest'
 sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf global java openjdk-21'
 sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf global python latest'
 sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && pip install uv pipx'
+
+echo "========================================================================"
+echo " Setup complete!"
+echo " Please restart your shell or run the following command to start using asdf:"
+echo " source ~/.bashrc"
+echo "========================================================================"
