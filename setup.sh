@@ -73,7 +73,7 @@ if [ "$NVIDIA_INSTALL_SUCCESS" = true ]; then
     echo "Warning: Failed to download NVIDIA repo list. Skipping NVIDIA Container Toolkit installation." >&2
     NVIDIA_INSTALL_SUCCESS=false
     rm -f /etc/apt/sources.list.d/nvidia-container-toolkit.list
-
+    
   else
     sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' /tmp/nvidia.list \
       | tee /etc/apt/sources.list.d/nvidia-container-toolkit.list >/dev/null
@@ -117,12 +117,6 @@ sudo -u "$TARGET_USER" bash -c 'grep -qxF '\''
 . $HOME/.asdf/asdf.sh'\'' ~/.bashrc || echo -e "\n. $HOME/.asdf/asdf.sh" >> ~/.bashrc'
 sudo -u "$TARGET_USER" bash -c 'grep -qxF '\''
 . $HOME/.asdf/completions/asdf.bash'\'' ~/.bashrc || echo -e "\n. $HOME/.asdf/completions/asdf.bash" >> ~/.bashrc'
-
-# Also append to .profile to ensure availability in login shells
-sudo -u "$TARGET_USER" bash -c 'grep -qxF '\''
-. $HOME/.asdf/asdf.sh'\'' ~/.profile || echo -e "\n. $HOME/.asdf/asdf.sh" >> ~/.profile'
-sudo -u "$TARGET_USER" bash -c 'grep -qxF '\''
-. $HOME/.asdf/completions/asdf.bash'\'' ~/.profile || echo -e "\n. $HOME/.asdf/completions/asdf.bash" >> ~/.profile'
 
 sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodejs.git || true'
 sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf plugin-add java https://github.com/halcyon/asdf-java.git || true'
