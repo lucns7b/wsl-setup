@@ -20,7 +20,7 @@ if ! command -v asdf &> /dev/null; then
 fi
 
 # Check if the plugins are installed
-for plugin in nodejs java python; do
+for plugin in nodejs java python tmux micro uv pipx lazydocker; do
     if ! asdf plugin-list | grep -q "$plugin"; then
         echo "asdf $plugin plugin not found"
         exit 1
@@ -28,10 +28,17 @@ for plugin in nodejs java python; do
 done
 
 # Check if the tools are available
-for tool in node java python uv pipx; do
+# Note: some tools might not be in the path if shim rehash didn't happen or shell didn't reload,
+# but sourcing asdf.sh should handle it.
+for tool in node java python tmux micro uv pipx lazydocker; do
     if ! command -v "$tool" &> /dev/null; then
-        echo "$tool could not be found"
-        exit 1
+        echo "$tool could not be found via asdf"
+        # Try to reshim just in case
+        asdf reshim "$tool"
+        if ! command -v "$tool" &> /dev/null; then
+             echo "Still cannot find $tool"
+             exit 1
+        fi
     fi
 done
 
