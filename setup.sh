@@ -14,9 +14,8 @@ TARGET_HOME="${TARGET_HOME:-/home/$TARGET_USER}"
 apt-get -qy update
 apt-get -qy -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" upgrade
 
-CLI_PACKAGES=(curl wget git tmux)
-DEV_PACKAGES=(build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev)
-EDITORS=(micro)
+CLI_PACKAGES=(curl wget git)
+DEV_PACKAGES=(build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev libevent-dev bison)
 
 curl_with_retry() {
   local retries=3
@@ -45,7 +44,6 @@ install_list() {
 
 install_list "${CLI_PACKAGES[@]}"
 install_list "${DEV_PACKAGES[@]}"
-install_list "${EDITORS[@]}"
 
 install -m 0755 -d /etc/apt/keyrings
 curl_with_retry -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
@@ -113,22 +111,42 @@ if [ ! -d "${TARGET_HOME}/.asdf" ]; then
   sudo -u "$TARGET_USER" bash -c 'git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.15.0'
 fi
 
-sudo -u "$TARGET_USER" bash -c 'grep -qxF '\''
-. $HOME/.asdf/asdf.sh'\'' ~/.bashrc || echo -e "\n. $HOME/.asdf/asdf.sh" >> ~/.bashrc'
-sudo -u "$TARGET_USER" bash -c 'grep -qxF '\''
-. $HOME/.asdf/completions/asdf.bash'\'' ~/.bashrc || echo -e "\n. $HOME/.asdf/completions/asdf.bash" >> ~/.bashrc'
+# Add to .bashrc
+sudo -u "$TARGET_USER" bash -c "grep -qF '. \"\$HOME/.asdf/asdf.sh\"' ~/.bashrc || echo -e '\n. \"\$HOME/.asdf/asdf.sh\"' >> ~/.bashrc"
+sudo -u "$TARGET_USER" bash -c "grep -qF '. \"\$HOME/.asdf/completions/asdf.bash\"' ~/.bashrc || echo -e '\n. \"\$HOME/.asdf/completions/asdf.bash\"' >> ~/.bashrc"
 
+# Add to .profile
+sudo -u "$TARGET_USER" bash -c "grep -qF '. \"\$HOME/.asdf/asdf.sh\"' ~/.profile || echo -e '\n. \"\$HOME/.asdf/asdf.sh\"' >> ~/.profile"
+
+# Plugins
 sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodejs.git || true'
 sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf plugin-add java https://github.com/halcyon/asdf-java.git || true'
 sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf plugin-add python || true'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf plugin-add tmux https://github.com/pauloedurezende/asdf-tmux.git || true'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf plugin-add micro https://github.com/sarg3nt/asdf-micro.git || true'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf plugin-add uv https://github.com/asdf-community/asdf-uv.git || true'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf plugin-add pipx https://github.com/yozachar/asdf-pipx.git || true'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf plugin-add lazydocker https://github.com/comdotlinux/asdf-lazydocker.git || true'
 
+# Installs
 sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf install nodejs latest || true'
 sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf install java openjdk-21 || true'
 sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf install python latest || true'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf install tmux latest || true'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf install micro latest || true'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf install uv latest || true'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf install pipx latest || true'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf install lazydocker latest || true'
+
+# Globals
 sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf global nodejs latest'
 sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf global java openjdk-21'
 sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf global python latest'
-sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && pip install uv pipx'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf global tmux latest'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf global micro latest'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf global uv latest'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf global pipx latest'
+sudo -u "$TARGET_USER" bash -c '. ~/.asdf/asdf.sh && asdf global lazydocker latest'
 
 echo "========================================================================"
 echo " Setup complete!"
